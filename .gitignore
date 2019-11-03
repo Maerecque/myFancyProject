@@ -4,3 +4,4 @@ myFancyproject.cabal
 *.o
 *.hi
 test
+/docs/
