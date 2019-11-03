@@ -20,17 +20,17 @@ neighbours (x, y) = do
 -- | function for making a new evolution
 step :: Grid -> Grid
 step aliveCells = do
-  (newAliveCell, n) <- frequencies (join (neighbours <$> aliveCells))
+  (newAliveCell, n) <- countingOccurences (join (neighbours <$> aliveCells))
   guard (n == 3 || n == 2 && newAliveCell `elem` aliveCells)
   return newAliveCell
 
--- | description (edit name of this function)
-frequencies :: Ord a => [a] -> [(a, Int)]
-frequencies xs = do
+-- | Couting Occurences of alive cells around eachother
+countingOccurences :: Ord a => [a] -> [(a, Int)]
+countingOccurences xs = do
   x <- group (sort xs)
   return (head x, length x)
 
--- | description
+-- | Function to format the entire grid and make sort of an UI
 formatGrid :: Grid -> String
 formatGrid grid = do
   y <- maxY
@@ -40,25 +40,24 @@ formatGrid grid = do
     marker x y      -- if there is an alive cell on that coordinate than mark it with a *, else leave it empty
       | (x, y) `elem` grid = ' '
       | otherwise          = '█'
+
     endOfLine :: Int -> [Char]
     endOfLine x      -- wait untill you are the end of the grid then print a breakline
       | x == maximum maxX = ['\n']
       | otherwise         = []
 
+    gridSize = [(0,0),(20,20)] -- size of the grid
     maxX = gridRange fst
     maxY = gridRange snd
-    gridRange f = [minGrid grid .. maxGrid grid]
-      where
+    gridRange f = [minGrid gridSize .. maxGrid gridSize] where
         minGrid = minimum . map f
         maxGrid = maximum . map f
 
--- | description
+-- | Function to print the entire grid
 printGrid :: Grid -> IO ()
 printGrid = putStrLn . formatGrid
 
 -- | main function to set everything in motion
 ui :: IO()
-ui = mapM_ printGrid (take 30 (iterate step cellCoordinates)) -- ammount of evolutions is declared here
-  where
-    cellCoordinates = [(0,0),(1,0),(1,1),(0,1), (5, 0), (6, 1), (4, 2), (5, 2), (6, 2), (15, 15),(14,15),(15,14),(14,14)] -- glider
-    gridSize = [(0,0),(20,20)] -- size of the grid
+ui = mapM_ printGrid (take 30 (iterate step cellCoordinates)) where -- ammount of evolutions is declared here
+    cellCoordinates = [(5, 0), (6, 1), (4, 2), (5, 2), (6, 2)] -- glider
