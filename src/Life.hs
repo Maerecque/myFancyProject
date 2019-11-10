@@ -4,7 +4,7 @@ module Life
 import Data.List  (group,sort)      --for use of group and sort
 import Control.Monad (guard,join)    -- for use of guard and join 
 
--- | AliveCell are the coordinates of an alive cell
+-- | Cell are the coordinates of an cell inside the grid, the name is missleading but this AliveCell can also be a dead cell
 type AliveCell = (Int, Int)
 
 -- | Grid is the grid of all cells, alive or dead.
@@ -44,8 +44,7 @@ formatGrid grid = do
       | (x, y) `elem` grid = ' '
       | otherwise          = '█'
 
-    -- Function to print out the end of a line.
-    endOfLine :: Int -> [Char] 
+    endOfLine :: Int -> [Char] -- ^ Function to print out the end of a line.
     endOfLine x      
       | x == maximum maxX = ['\n']
       | otherwise         = []
@@ -59,7 +58,7 @@ formatGrid grid = do
 
 printGrid :: Grid -> IO ()
 -- | Function to print the entire grid
--- print the grid after being formatted
+-- | print the grid after being formatted
 printGrid = putStrLn . formatGrid 
 
 ui :: IO()
